@@ -1,9 +1,20 @@
-export default function Card({ symbol, isFlipped, isMatched }) {
+export default function Card({
+  cardID,
+  symbol,
+  isFlipped,
+  isMatched,
+  handleClick,
+}) {
   return (
-    <div className={`card ${isFlipped || isMatched ? "flipped" : ""}`}>
+    <div
+      className={`card ${isFlipped ? "flipped" : ""} ${
+        isMatched ? "matched" : ""
+      }`}
+      onClick={handleClick}
+    >
       <div className="card-inner-container">
-        {/* <p>{isFlipped || isMatched ? symbol : "❓"}</p> */}
-        <p>{symbol}</p>
+        <p>{isFlipped || isMatched ? symbol : "❓"}</p>
+        {/* <p>{symbol}</p> */}
       </div>
     </div>
   );

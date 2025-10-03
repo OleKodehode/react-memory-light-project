@@ -56,18 +56,72 @@ function App() {
     return () => window.removeEventListener("resize", handleResize); // cleanup of eventListeners.
   }, []);
 
+  // useEffect to check for matches when 2 cards are flipped
+  useEffect(() => {
+    if (isFlipped.length < 2) return;
+
+    const [firstID, secondID] = isFlipped;
+    const firstCard = cards.find((card) => card.id === firstID);
+    const secondCard = cards.find((card) => card.id === secondID);
+
+    // a check just in case
+    if (!firstCard || !secondCard) return;
+
+    if (firstCard.symbol === secondCard.symbol) {
+      setIsMatched((prev) => [...prev, firstID, secondID]);
+      setIsFlipped([]);
+      setCards(
+        cards.map((card) =>
+          card.id === firstID || card.id === secondID
+            ? { ...card, isMatched: true }
+            : card
+        )
+      );
+    } else {
+      // small timeout
+      setTimeout(() => {
+        setCards((prev) =>
+          prev.map((card) =>
+            card.id === firstID || card.id === secondID
+              ? { ...card, isFlipped: false }
+              : card
+          )
+        );
+        setIsFlipped([]);
+      }, 1000);
+    }
+    setMoves((moves) => moves + 1);
+  }, [isFlipped, cards]);
+
   function getPairCount() {
     // Set the amount of pairs needed depending on the screen size.
     const width = window.innerWidth;
     if (width < 640) return 8; //mobile
     if (width < 1024) return 12; //tablet
-    return 16; // desktop
+    return 18; // desktop
   }
+
+  const handleCardClick = (id) => {
+    console.log(`Card with ID ${id} was clicked.`);
+    // Check for invalid clicks first
+    if (isFlipped.length === 2) return;
+    if (isFlipped.includes(id)) return;
+    if (isMatched.includes(id)) return;
+
+    setCards((prev) =>
+      prev.map((card) => (card.id === id ? { ...card, isFlipped: true } : card))
+    );
+    setIsFlipped((prev) => [...prev, id]);
+  };
 
   return (
     <>
       <Header title={"Match 2"} timer={seconds} moves={moves} />
-      {isLandscape ? <GameBoard cards={cards} /> : <OrientationWarning />}
+      {isLandscape ? (
+        <GameBoard cards={cards} handleClick={handleCardClick} />
+      ) : (
+        <OrientationWarning />
+      )}
     </>
   );
 }
