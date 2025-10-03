@@ -33,12 +33,19 @@ import { useEffect, useState } from "react";
 import GameBoard from "./components/GameBoard";
 import OrientationWarning from "./components/OrientationWarning";
 import Header from "./components/Header";
+import { generateDeck } from "./utils/deck";
 
 function App() {
   // State to check if the device is in landscape or not - Display a warning if not.
   const [isLandscape, setIsLandscape] = useState(
     window.innerWidth > window.innerHeight
   );
+  const [cards, setCards] = useState(generateDeck(getPairCount()));
+  const [isFlipped, setIsFlipped] = useState([]);
+  const [isMatched, setIsMatched] = useState([]);
+  const [moves, setMoves] = useState(0);
+  const [gameWon, setGameWon] = useState(false);
+  const [seconds, setSeconds] = useState(0); // Timer
 
   // useEffect to check at every render if the device is (still) in landscape mode
   useEffect(() => {
@@ -49,10 +56,18 @@ function App() {
     return () => window.removeEventListener("resize", handleResize); // cleanup of eventListeners.
   }, []);
 
+  function getPairCount() {
+    // Set the amount of pairs needed depending on the screen size.
+    const width = window.innerWidth;
+    if (width < 640) return 8; //mobile
+    if (width < 1024) return 12; //tablet
+    return 16; // desktop
+  }
+
   return (
     <>
-      <Header title={"React Memory Game"} timer={0} moves={0} />
-      {isLandscape ? <GameBoard /> : <OrientationWarning />}
+      <Header title={"Match 2"} timer={seconds} moves={moves} />
+      {isLandscape ? <GameBoard cards={cards} /> : <OrientationWarning />}
     </>
   );
 }

@@ -13,11 +13,19 @@
 }
 
 body {
-  @apply flex items-center justify-center;
+  @apply flex items-center justify-center mt-10;
 }
 
 header {
   @apply fixed top-0 left-0 w-full bg-sky-400 dark:bg-sky-700 text-zinc-900 dark:text-zinc-200 flex justify-between items-center px-5 py-1.5;
+}
+
+.card {
+  @apply size-20 flex items-center justify-center border-zinc-900 dark:border-sky-500 border rounded-lg cursor-pointer text-4xl bg-slate-500 dark:bg-slate-800 hover:ring-2 dark:hover:ring-fuchsia-500 dark:hover:bg-slate-700;
+}
+
+.flipped {
+  @apply bg-lime-400 border-lime-700 dark:border-lime-500 dark:bg-green-800 border-3;
 }
 
 /* 
