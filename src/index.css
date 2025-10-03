@@ -15,3 +15,26 @@
 body {
   @apply flex items-center justify-center;
 }
+
+/* 
+Media query for å håndtere orientation - Spillet blir designet for landscape.
+Skal i utgangspunktet bare dukke opp på mobil/tablet
+ */
+
+@media screen and (orientation: portrait) {
+  .portrait-warning {
+    display: block;
+  }
+  .landscape-only {
+    display: none;
+  }
+}
+
+@media screen and (orientation: landscape) {
+  .portrait-warning {
+    display: none;
+  }
+  .landscape-only {
+    display: block;
+  }
+}
