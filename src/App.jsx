@@ -32,6 +32,7 @@ WinModal Komponent - Når gameWon er True, vis denne med antall moves gjort i sp
 import { useEffect, useState } from "react";
 import GameBoard from "./components/GameBoard";
 import OrientationWarning from "./components/OrientationWarning";
+import Header from "./components/Header";
 
 function App() {
   // State to check if the device is in landscape or not - Display a warning if not.
@@ -44,11 +45,16 @@ function App() {
     const handleResize = () => {
       setIsLandscape(window.innerWidth > window.innerHeight);
     };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize); // Rotating the screen will trigger a resize event.
+    return () => window.removeEventListener("resize", handleResize); // cleanup of eventListeners.
   }, []);
 
-  return <>{isLandscape ? <GameBoard /> : <OrientationWarning />}</>;
+  return (
+    <>
+      <Header title={"React Memory Game"} timer={0} moves={0} />
+      {isLandscape ? <GameBoard /> : <OrientationWarning />}
+    </>
+  );
 }
 
 export default App;

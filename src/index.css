@@ -16,9 +16,14 @@ body {
   @apply flex items-center justify-center;
 }
 
+header {
+  @apply fixed top-0 left-0 w-full bg-sky-400 dark:bg-sky-700 text-zinc-900 dark:text-zinc-200 flex justify-between items-center px-5 py-1.5;
+}
+
 /* 
 Media query for å håndtere orientation - Spillet blir designet for landscape.
-Skal i utgangspunktet bare dukke opp på mobil/tablet
+Skal i utgangspunktet bare dukke opp på mobil/tablet.
+Fall-back - Håndteres først og fremst av app.jsx med states.
  */
 
 @media screen and (orientation: portrait) {
