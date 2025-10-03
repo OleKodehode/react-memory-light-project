@@ -102,7 +102,6 @@ function App() {
   }
 
   const handleCardClick = (id) => {
-    console.log(`Card with ID ${id} was clicked.`);
     // Check for invalid clicks first
     if (isFlipped.length === 2) return;
     if (isFlipped.includes(id)) return;
