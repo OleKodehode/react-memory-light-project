@@ -29,12 +29,13 @@ GameBoard (Main) Komponent - Muligens noe unødvendig. Får noe logikk og annet 
 WinModal Komponent - Når gameWon er True, vis denne med antall moves gjort i spillet, hvor lang tid man brukte, beste score (moves & tid), og en restart knapp.
 */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GameBoard from "./components/GameBoard";
 import OrientationWarning from "./components/OrientationWarning";
 import Header from "./components/Header";
 import { generateDeck } from "./utils/deck";
 import GameDoneOverlay from "./components/GameDoneOverlay";
+import GamePopup from "./components/GamePopup";
 
 function App() {
   // State to check if the device is in landscape or not - Display a warning if not.
@@ -47,6 +48,8 @@ function App() {
   const [moves, setMoves] = useState(0);
   const [gameWon, setGameWon] = useState(false);
   const [seconds, setSeconds] = useState(0); // Timer
+  const [gameStarted, setGameStarted] = useState(false);
+  const timerRef = useRef(null);
 
   // useEffect to check at every render if the device is (still) in landscape mode
   useEffect(() => {
@@ -98,8 +101,10 @@ function App() {
 
   // useEffect to check if the game is won using isMatched
   useEffect(() => {
-    if (isMatched.length === cards.length) setGameWon(true);
-    if (gameWon) console.log("Game Won: ", gameWon);
+    if (isMatched.length === cards.length) {
+      setGameWon(true);
+      clearInterval(timerRef.current);
+    }
   }, [isMatched]);
 
   function getPairCount() {
@@ -128,18 +133,38 @@ function App() {
     setIsMatched([]);
     setSeconds(0);
     setCards(generateDeck(getPairCount()));
+    timerRef.current = setInterval(() => {
+      setSeconds((prev) => prev + 1);
+    }, 1000);
     setGameWon(false);
+  };
+
+  const handleGameStart = () => {
+    setGameStarted(true);
+    timerRef.current = setInterval(() => {
+      setSeconds((prev) => prev + 1);
+    }, 1000);
   };
 
   return (
     <>
-      <Header title={"Match 2"} timer={seconds} moves={moves} />
+      <Header
+        title={"Match 2"}
+        timer={seconds}
+        moves={moves}
+        restart={handleRestart}
+      />
       {isLandscape ? (
         <GameBoard cards={cards} handleClick={handleCardClick} />
       ) : (
         <OrientationWarning />
       )}
-      {gameWon && <GameDoneOverlay moves={moves} restart={handleRestart} />}
+      {gameWon && (
+        <GameDoneOverlay moves={moves} time={seconds} restart={handleRestart} />
+      )}
+      {!gameStarted && (
+        <GamePopup start={handleGameStart} gameInfo={getPairCount} />
+      )}
     </>
   );
 }
