@@ -34,6 +34,7 @@ import GameBoard from "./components/GameBoard";
 import OrientationWarning from "./components/OrientationWarning";
 import Header from "./components/Header";
 import { generateDeck } from "./utils/deck";
+import GameDoneOverlay from "./components/GameDoneOverlay";
 
 function App() {
   // State to check if the device is in landscape or not - Display a warning if not.
@@ -68,15 +69,17 @@ function App() {
     if (!firstCard || !secondCard) return;
 
     if (firstCard.symbol === secondCard.symbol) {
-      setIsMatched((prev) => [...prev, firstID, secondID]);
-      setIsFlipped([]);
-      setCards(
-        cards.map((card) =>
-          card.id === firstID || card.id === secondID
-            ? { ...card, isMatched: true }
-            : card
-        )
-      );
+      setTimeout(() => {
+        setIsMatched((prev) => [...prev, firstID, secondID]);
+        setIsFlipped([]);
+        setCards(
+          cards.map((card) =>
+            card.id === firstID || card.id === secondID
+              ? { ...card, isMatched: true }
+              : card
+          )
+        );
+      }, 200);
     } else {
       // small timeout
       setTimeout(() => {
@@ -88,10 +91,16 @@ function App() {
           )
         );
         setIsFlipped([]);
-      }, 1000);
+      }, 500);
     }
     setMoves((moves) => moves + 1);
   }, [isFlipped, cards]);
+
+  // useEffect to check if the game is won using isMatched
+  useEffect(() => {
+    if (isMatched.length === cards.length) setGameWon(true);
+    if (gameWon) console.log("Game Won: ", gameWon);
+  }, [isMatched]);
 
   function getPairCount() {
     // Set the amount of pairs needed depending on the screen size.
@@ -113,6 +122,15 @@ function App() {
     setIsFlipped((prev) => [...prev, id]);
   };
 
+  const handleRestart = () => {
+    setMoves(0);
+    setIsFlipped([]);
+    setIsMatched([]);
+    setSeconds(0);
+    setCards(generateDeck(getPairCount()));
+    setGameWon(false);
+  };
+
   return (
     <>
       <Header title={"Match 2"} timer={seconds} moves={moves} />
@@ -121,6 +139,7 @@ function App() {
       ) : (
         <OrientationWarning />
       )}
+      {gameWon && <GameDoneOverlay moves={moves} restart={handleRestart} />}
     </>
   );
 }
