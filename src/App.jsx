@@ -49,13 +49,14 @@ function App() {
   const [gameWon, setGameWon] = useState(false);
   const [seconds, setSeconds] = useState(0); // Timer
   const [gameStarted, setGameStarted] = useState(false);
-  const timerRef = useRef(null);
   const [bestMoves, setBestMoves] = useState(
     localStorage.getItem("bestMoves") || 999999999
   );
   const [bestTime, setBestTime] = useState(
     localStorage.getItem("bestTime") || 999999999
   );
+
+  const timerRef = useRef(null);
 
   // useEffect to check at every render if the device is (still) in landscape mode
   useEffect(() => {
@@ -88,7 +89,7 @@ function App() {
               : card
           )
         );
-      }, 200);
+      }, 650);
     } else {
       // small timeout
       setTimeout(() => {
@@ -100,7 +101,7 @@ function App() {
           )
         );
         setIsFlipped([]);
-      }, 500);
+      }, 650);
     }
     setMoves((moves) => moves + 1);
   }, [isFlipped, cards]);
@@ -183,7 +184,7 @@ function App() {
           highScore={{ moves: bestMoves, time: bestTime }}
         />
       )}
-      {!gameStarted && (
+      {!gameStarted && isLandscape && (
         <GamePopup start={handleGameStart} gameInfo={getPairCount} />
       )}
     </>

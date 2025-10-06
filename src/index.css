@@ -13,7 +13,7 @@
 }
 
 body {
-  @apply flex items-center justify-center mt-10;
+  @apply flex items-center justify-center mt-15 overflow-hidden;
 }
 
 header {
@@ -21,7 +21,40 @@ header {
 }
 
 .card {
-  @apply size-20 flex items-center justify-center border-zinc-900 dark:border-sky-500 border rounded-lg cursor-pointer text-4xl bg-slate-500 dark:bg-slate-800 hover:ring-2 dark:hover:ring-fuchsia-500 dark:hover:bg-slate-700;
+  @apply size-18 flex items-center justify-center border-zinc-900 dark:border-sky-500 rounded-lg cursor-pointer text-4xl bg-slate-500 dark:bg-slate-800 hover:ring-2 dark:hover:ring-fuchsia-500 dark:hover:bg-slate-700;
+  perspective: 1000px;
+}
+
+.card-inner-container {
+  @apply border-1 border-zinc-900 dark:border-sky-500 rounded-lg;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.card-inner-container.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  backface-visibility: hidden;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.card-front {
+  transform: rotateY(180deg);
+  top: 20%;
+  right: 20%;
+}
+
+.card-back {
+  top: 20%;
+  left: 20%;
 }
 
 .flipped {
