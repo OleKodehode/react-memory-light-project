@@ -50,6 +50,12 @@ function App() {
   const [seconds, setSeconds] = useState(0); // Timer
   const [gameStarted, setGameStarted] = useState(false);
   const timerRef = useRef(null);
+  const [bestMoves, setBestMoves] = useState(
+    localStorage.getItem("bestMoves") || 999999999
+  );
+  const [bestTime, setBestTime] = useState(
+    localStorage.getItem("bestTime") || 999999999
+  );
 
   // useEffect to check at every render if the device is (still) in landscape mode
   useEffect(() => {
@@ -104,8 +110,18 @@ function App() {
     if (isMatched.length === cards.length) {
       setGameWon(true);
       clearInterval(timerRef.current);
+      if (moves < bestMoves) setBestMoves(moves);
+      if (seconds < bestTime) setBestTime(seconds);
     }
   }, [isMatched]);
+
+  useEffect(() => {
+    localStorage.setItem("bestMoves", bestMoves);
+  }, [bestMoves]);
+
+  useEffect(() => {
+    localStorage.setItem("bestTime", bestTime);
+  }, [bestTime]);
 
   function getPairCount() {
     // Set the amount of pairs needed depending on the screen size.
@@ -160,7 +176,12 @@ function App() {
         <OrientationWarning />
       )}
       {gameWon && (
-        <GameDoneOverlay moves={moves} time={seconds} restart={handleRestart} />
+        <GameDoneOverlay
+          moves={moves}
+          time={seconds}
+          restart={handleRestart}
+          highScore={{ moves: bestMoves, time: bestTime }}
+        />
       )}
       {!gameStarted && (
         <GamePopup start={handleGameStart} gameInfo={getPairCount} />
